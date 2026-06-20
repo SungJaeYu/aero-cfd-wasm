@@ -35,32 +35,44 @@
     </style>
   </head>
   <body>
-    <h1>LBM D2Q9 — flow over a NACA0012 (weakly-compressible, Ma &lt; 0.3)</h1>
+    <h1>LBM D2Q9 — flow over a NACA0012 · NACA0012 주위 유동 (weakly-compressible, Ma &lt; 0.3)</h1>
     <canvas id="view" width="800" height="400"></canvas>
     <div class="controls">
       <div class="ctl">
-        <label for="field">field</label>
+        <label for="field">field · 필드</label>
         <select id="field">
-          <option value="vorticity">vorticity</option>
-          <option value="speed">speed |u|</option>
-          <option value="density">density (≈ pressure)</option>
+          <option value="vorticity">vorticity · 와도</option>
+          <option value="speed">speed |u| · 속력</option>
+          <option value="density">density · 밀도 (≈ pressure 압력)</option>
         </select>
       </div>
       <div class="ctl">
-        <label for="aoa">AoA <span class="val" id="aoaVal">8°</span></label>
+        <label for="aoa">AoA · 받음각 <span class="val" id="aoaVal">8°</span></label>
         <input type="range" id="aoa" min="-15" max="15" step="1" value="8" />
       </div>
       <div class="ctl">
-        <label for="re">Reynolds <span class="val" id="reVal">200</span></label>
+        <label for="re">Reynolds · 레이놀즈수 <span class="val" id="reVal">200</span></label>
         <input type="range" id="re" min="50" max="1000" step="10" value="200" />
       </div>
       <div class="ctl">
-        <label>&nbsp;</label>
-        <button id="playpause">pause</button>
+        <label for="uin">flow speed · 유속 <span class="val" id="uinVal">0.100</span> <span id="maVal" style="color:#8aa3a7"></span></label>
+        <input type="range" id="uin" min="0.02" max="0.15" step="0.005" value="0.1" />
+      </div>
+      <div class="ctl">
+        <label for="chord">chord · 시위 <span class="val" id="chordVal">60</span></label>
+        <input type="range" id="chord" min="30" max="120" step="5" value="60" />
+      </div>
+      <div class="ctl">
+        <label for="thick">thickness · 두께 <span class="val" id="thickVal">0.12</span></label>
+        <input type="range" id="thick" min="0.06" max="0.30" step="0.01" value="0.12" />
       </div>
       <div class="ctl">
         <label>&nbsp;</label>
-        <button id="reset">reset</button>
+        <button id="playpause">pause · 정지</button>
+      </div>
+      <div class="ctl">
+        <label>&nbsp;</label>
+        <button id="reset">reset · 초기화</button>
       </div>
     </div>
     <script type="module" src="./render.js"></script>

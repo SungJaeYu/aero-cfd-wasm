@@ -140,9 +140,29 @@ async function main() {
     $("reVal").textContent = state.Re;
     build(); // viscosity changes omega -> rebuild
   });
+  const showMa = () => {
+    $("maVal").textContent = "Ma " + (state.uIn * Math.sqrt(3)).toFixed(2);
+  };
+  $("uin").addEventListener("input", (e) => {
+    state.uIn = +e.target.value;
+    $("uinVal").textContent = state.uIn.toFixed(3);
+    showMa();
+    build(); // u_in feeds omega (nu = u_in*chord/Re) and the free-stream BCs
+  });
+  $("chord").addEventListener("input", (e) => {
+    state.chord = +e.target.value;
+    $("chordVal").textContent = state.chord;
+    build(); // chord feeds omega and the mask -> rebuild
+  });
+  $("thick").addEventListener("input", (e) => {
+    state.thickness = +e.target.value;
+    $("thickVal").textContent = state.thickness.toFixed(2);
+    api.setNaca(state.sim, state.pivotX, state.pivotY, state.thickness, state.aoaDeg);
+  });
+  showMa();
   $("playpause").addEventListener("click", (e) => {
     state.playing = !state.playing;
-    e.target.textContent = state.playing ? "pause" : "play";
+    e.target.textContent = state.playing ? "pause · 정지" : "play · 재생";
   });
   $("reset").addEventListener("click", build);
 
