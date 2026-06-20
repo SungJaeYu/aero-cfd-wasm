@@ -57,7 +57,7 @@ The smoke test runs 3000 steps and checks: finite (no NaN/Inf),
 **2. Then WASM.** Requires emscripten on PATH (`source emsdk_env.sh`):
 
 ```bash
-./build_wasm.sh        # -> web/dist/lbm.mjs + lbm.wasm
+./build_wasm.sh        # -> web/wasm/lbm.mjs + lbm.wasm
 python3 -m http.server -d web 8000   # then open http://localhost:8000
 ```
 

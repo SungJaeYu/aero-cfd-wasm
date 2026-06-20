@@ -1,5 +1,5 @@
 build/
-web/dist/
+web/wasm/
 *.o
 *.wasm
 .DS_Store

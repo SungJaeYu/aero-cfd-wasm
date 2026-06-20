@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Build the LBM solver to an ES6 WASM module: web/dist/lbm.mjs + lbm.wasm.
+# Build the LBM solver to an ES6 WASM module: web/wasm/lbm.mjs + lbm.wasm.
 # Requires emscripten (emcc) on PATH. Run the native gate (ctest) first.
 set -euo pipefail
 
@@ -8,8 +8,10 @@ if ! command -v emcc >/dev/null 2>&1; then
   exit 1
 fi
 
+# Output dir is web/wasm (NOT web/dist) — a "dist/" folder gets swallowed by the
+# common `dist/` .gitignore rule when these assets are copied into a host site.
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-OUT="$ROOT/web/dist"
+OUT="$ROOT/web/wasm"
 mkdir -p "$OUT"
 
 EXPORTS='["_lbm_create","_lbm_destroy","_lbm_set_naca","_lbm_set_cylinder","_lbm_set_ellipse","_lbm_set_box","_lbm_step","_lbm_nx","_lbm_ny","_lbm_rho","_lbm_ux","_lbm_uy","_lbm_solid","_malloc","_free"]'

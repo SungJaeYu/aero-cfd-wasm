@@ -4,7 +4,7 @@
 //
 // ALLOW_MEMORY_GROWTH detaches HEAP views on growth, so views are re-acquired
 // every frame from Module.HEAPF32 / Module.HEAPU8.
-import createModule from "./dist/lbm.mjs";
+import createModule from "./wasm/lbm.mjs";
 
 // --- cockpit theme -----------------------------------------------------------
 const BASE = [0x0b, 0x0f, 0x12];
