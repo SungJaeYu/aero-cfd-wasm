@@ -30,11 +30,29 @@ Macroscopic fields (ρ, uₓ, u_y) are stored as **float32** for zero-copy
 `HEAPF32` views from JS; the distributions `f` are double; the solid mask is
 uint8.
 
+## Shapes
+
+The solid body is just a boolean mask, so the bluff/streamlined body is
+swappable at runtime (`lbm_set_*` rebuilds the mask in place — no solver
+rebuild). The harness exposes four:
+
+| Shape    | Mask builder            | Geometry                                                        | Flow character |
+|----------|-------------------------|----------------------------------------------------------------|----------------|
+| airfoil  | `naca_solid_mask`       | NACA 4-digit thickness law, chord + thickness, rotated by −AoA  | streamlined; attached flow at low AoA, stall + wake as AoA grows |
+| cylinder | `cylinder_solid_mask`   | circle, diameter = chord (the classic 2D bluff body)           | clean **Kármán vortex street** — the textbook alternating-vortex wake |
+| ellipse  | `ellipse_solid_mask`    | semi-axes (chord/2, thickness·chord), rotated by −AoA           | between airfoil and cylinder; bluffness tunable via thickness |
+| box      | `box_solid_mask`        | rectangle (chord × 2·thickness·chord), rotated by −AoA          | sharp-edged separation; fixed separation points at the corners |
+
+Sliders map the same way for every shape: **chord** sets the streamwise size,
+**thickness** the cross-stream size, **AoA** rotates it (cylinder ignores AoA).
+Any other silhouette (e.g. an FA-50 section) drops into the same boolean-mask
+slot.
+
 ## Layout
 
 ```
 include/lbm/lbm.hpp        D2Q9 BGK solver (header-only, no platform deps)
-include/lbm/geometry.hpp   NACA 4-digit -> solid mask
+include/lbm/geometry.hpp   solid masks: NACA airfoil / cylinder / ellipse / box
 src/native_main.cpp        native physics smoke test
 src/wasm_bindings.cpp      extern "C" exports
 web/index.html, render.js  canvas render harness
