@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>aero-cfd-wasm — LBM flow over a NACA airfoil</title>
+    <title>Aero CFD — 에어포일 주위 유동</title>
     <style>
       :root {
         --base: #0b0f12;
@@ -22,7 +22,8 @@
         gap: 12px;
         padding: 16px;
       }
-      h1 { font-size: 16px; font-weight: 600; color: var(--cyan); margin: 4px 0; }
+      h1 { font-size: 18px; font-weight: 600; color: var(--cyan); margin: 8px 0 2px; letter-spacing: 0.02em; }
+      .sub { margin: 0 0 8px; font-size: 12px; color: #7e949b; }
       canvas { border: 1px solid #1c2529; image-rendering: pixelated; width: 800px; height: 400px; }
       .controls { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; max-width: 800px; }
       .ctl { display: flex; flex-direction: column; gap: 2px; }
@@ -35,7 +36,8 @@
     </style>
   </head>
   <body>
-    <h1>LBM D2Q9 — flow over a NACA0012 · NACA0012 주위 유동 (weakly-compressible, Ma &lt; 0.3)</h1>
+    <h1>에어포일 주위 유동 · Flow Over an Airfoil</h1>
+    <p class="sub">Lattice-Boltzmann D2Q9 · WebAssembly · weakly-compressible (Ma &lt; 0.3)</p>
     <canvas id="view" width="800" height="400"></canvas>
     <div class="controls">
       <div class="ctl">
