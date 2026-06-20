@@ -50,6 +50,9 @@ async function main() {
     create: Module.cwrap("lbm_create", "number", ["number", "number", "number", "number", "number"]),
     destroy: Module.cwrap("lbm_destroy", null, ["number"]),
     setNaca: Module.cwrap("lbm_set_naca", null, ["number", "number", "number", "number", "number"]),
+    setCylinder: Module.cwrap("lbm_set_cylinder", null, ["number", "number", "number", "number"]),
+    setEllipse: Module.cwrap("lbm_set_ellipse", null, ["number", "number", "number", "number", "number", "number"]),
+    setBox: Module.cwrap("lbm_set_box", null, ["number", "number", "number", "number", "number", "number"]),
     step: Module.cwrap("lbm_step", null, ["number", "number"]),
     nx: Module.cwrap("lbm_nx", "number", ["number"]),
     ny: Module.cwrap("lbm_ny", "number", ["number"]),
@@ -65,12 +68,25 @@ async function main() {
   const dispCtx = display.getContext("2d");
   dispCtx.imageSmoothingEnabled = false;
 
-  const state = { ...DEFAULTS, sim: 0, field: "vorticity", playing: true, img: null };
+  const state = { ...DEFAULTS, sim: 0, field: "vorticity", shape: "airfoil", playing: true, img: null };
+
+  // Map the current sliders to whichever solid shape is selected. Bluff bodies
+  // sit at the airfoil's mid-chord; thickness drives their cross-stream size.
+  function applyShape() {
+    const s = state;
+    const cx = s.pivotX + s.chord / 2;
+    const cy = s.pivotY;
+    const halfH = Math.max(2, s.thickness * s.chord);
+    if (s.shape === "cylinder") api.setCylinder(s.sim, cx, cy, s.chord / 2);
+    else if (s.shape === "ellipse") api.setEllipse(s.sim, cx, cy, s.chord / 2, halfH, s.aoaDeg);
+    else if (s.shape === "box") api.setBox(s.sim, cx, cy, s.chord / 2, halfH, s.aoaDeg);
+    else api.setNaca(s.sim, s.pivotX, s.pivotY, s.thickness, s.aoaDeg);
+  }
 
   function build() {
     if (state.sim) api.destroy(state.sim);
     state.sim = api.create(state.nx, state.ny, state.uIn, state.Re, state.chord);
-    api.setNaca(state.sim, state.pivotX, state.pivotY, state.thickness, state.aoaDeg);
+    applyShape();
     off.width = state.nx;
     off.height = state.ny;
     state.img = offCtx.createImageData(state.nx, state.ny);
@@ -130,10 +146,14 @@ async function main() {
   // --- controls --------------------------------------------------------------
   const $ = (id) => document.getElementById(id);
   $("field").addEventListener("change", (e) => (state.field = e.target.value));
+  $("shape").addEventListener("change", (e) => {
+    state.shape = e.target.value;
+    applyShape(); // remask in place; no rebuild needed
+  });
   $("aoa").addEventListener("input", (e) => {
     state.aoaDeg = +e.target.value;
     $("aoaVal").textContent = state.aoaDeg.toFixed(0) + "°";
-    api.setNaca(state.sim, state.pivotX, state.pivotY, state.thickness, state.aoaDeg);
+    applyShape();
   });
   $("re").addEventListener("input", (e) => {
     state.Re = +e.target.value;
@@ -157,7 +177,7 @@ async function main() {
   $("thick").addEventListener("input", (e) => {
     state.thickness = +e.target.value;
     $("thickVal").textContent = state.thickness.toFixed(2);
-    api.setNaca(state.sim, state.pivotX, state.pivotY, state.thickness, state.aoaDeg);
+    applyShape();
   });
   showMa();
   $("playpause").addEventListener("click", (e) => {
@@ -170,4 +190,11 @@ async function main() {
   requestAnimationFrame(frame);
 }
 
-main();
+function showErr(e) {
+  const el = document.getElementById("err");
+  if (el) el.textContent = "init error: " + (e && e.message ? e.message : e);
+  console.error(e);
+}
+window.addEventListener("error", (ev) => showErr(ev.error || ev.message));
+window.addEventListener("unhandledrejection", (ev) => showErr(ev.reason));
+main().catch(showErr);

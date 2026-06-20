@@ -45,6 +45,57 @@ inline std::vector<std::uint8_t> naca_solid_mask(int nx, int ny, double chord,
     return mask;
 }
 
+// Cylinder (2D circle) — the canonical bluff body for a Kármán vortex street.
+inline std::vector<std::uint8_t> cylinder_solid_mask(int nx, int ny,
+                                                     double cxc, double cyc,
+                                                     double radius) {
+    std::vector<std::uint8_t> mask(static_cast<size_t>(nx) * ny, 0u);
+    const double r2 = radius * radius;
+    for (int y = 0; y < ny; ++y) {
+        for (int x = 0; x < nx; ++x) {
+            const double dx = x - cxc, dy = y - cyc;
+            if (dx * dx + dy * dy <= r2) mask[static_cast<size_t>(x) + y * nx] = 1u;
+        }
+    }
+    return mask;
+}
+
+// Ellipse with semi-axes (rx, ry), rotated by aoaRad.
+inline std::vector<std::uint8_t> ellipse_solid_mask(int nx, int ny, double cxc,
+                                                    double cyc, double rx,
+                                                    double ry, double aoaRad) {
+    std::vector<std::uint8_t> mask(static_cast<size_t>(nx) * ny, 0u);
+    const double ca = std::cos(aoaRad), sa = std::sin(aoaRad);
+    for (int y = 0; y < ny; ++y) {
+        for (int x = 0; x < nx; ++x) {
+            const double dx = x - cxc, dy = y - cyc;
+            const double xr = dx * ca + dy * sa;   // rotate by -aoa
+            const double yr = -dx * sa + dy * ca;
+            const double e = (xr * xr) / (rx * rx) + (yr * yr) / (ry * ry);
+            if (e <= 1.0) mask[static_cast<size_t>(x) + y * nx] = 1u;
+        }
+    }
+    return mask;
+}
+
+// Axis-aligned box of half-extents (halfW, halfH), rotated by aoaRad.
+inline std::vector<std::uint8_t> box_solid_mask(int nx, int ny, double cxc,
+                                                double cyc, double halfW,
+                                                double halfH, double aoaRad) {
+    std::vector<std::uint8_t> mask(static_cast<size_t>(nx) * ny, 0u);
+    const double ca = std::cos(aoaRad), sa = std::sin(aoaRad);
+    for (int y = 0; y < ny; ++y) {
+        for (int x = 0; x < nx; ++x) {
+            const double dx = x - cxc, dy = y - cyc;
+            const double xr = dx * ca + dy * sa;
+            const double yr = -dx * sa + dy * ca;
+            if (std::abs(xr) <= halfW && std::abs(yr) <= halfH)
+                mask[static_cast<size_t>(x) + y * nx] = 1u;
+        }
+    }
+    return mask;
+}
+
 }  // namespace lbm
 
 #endif  // LBM_GEOMETRY_HPP

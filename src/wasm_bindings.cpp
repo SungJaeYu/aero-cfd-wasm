@@ -32,6 +32,25 @@ void lbm_set_naca(lbm::Lbm* s, double pivotX, double pivotY, double thickness,
 }
 
 EMSCRIPTEN_KEEPALIVE
+void lbm_set_cylinder(lbm::Lbm* s, double cx, double cy, double radius) {
+    s->setSolid(lbm::cylinder_solid_mask(s->nx(), s->ny(), cx, cy, radius));
+}
+
+EMSCRIPTEN_KEEPALIVE
+void lbm_set_ellipse(lbm::Lbm* s, double cx, double cy, double rx, double ry,
+                     double aoaDeg) {
+    const double a = aoaDeg * 3.14159265358979323846 / 180.0;
+    s->setSolid(lbm::ellipse_solid_mask(s->nx(), s->ny(), cx, cy, rx, ry, a));
+}
+
+EMSCRIPTEN_KEEPALIVE
+void lbm_set_box(lbm::Lbm* s, double cx, double cy, double halfW, double halfH,
+                 double aoaDeg) {
+    const double a = aoaDeg * 3.14159265358979323846 / 180.0;
+    s->setSolid(lbm::box_solid_mask(s->nx(), s->ny(), cx, cy, halfW, halfH, a));
+}
+
+EMSCRIPTEN_KEEPALIVE
 void lbm_step(lbm::Lbm* s, int substeps) { s->step(substeps); }
 
 EMSCRIPTEN_KEEPALIVE

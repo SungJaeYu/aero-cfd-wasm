@@ -38,6 +38,7 @@
   <body>
     <h1>에어포일 주위 유동 · Flow Over an Airfoil</h1>
     <p class="sub">Lattice-Boltzmann D2Q9 · WebAssembly · weakly-compressible (Ma &lt; 0.3)</p>
+    <div id="err" style="color: var(--amber); font-size: 12px; min-height: 1em"></div>
     <canvas id="view" width="800" height="400"></canvas>
     <div class="controls">
       <div class="ctl">
@@ -46,6 +47,15 @@
           <option value="vorticity">vorticity · 와도</option>
           <option value="speed">speed |u| · 속력</option>
           <option value="density">density · 밀도 (≈ pressure 압력)</option>
+        </select>
+      </div>
+      <div class="ctl">
+        <label for="shape">shape · 물체</label>
+        <select id="shape">
+          <option value="airfoil">airfoil · 에어포일</option>
+          <option value="cylinder">cylinder · 원기둥</option>
+          <option value="ellipse">ellipse · 타원</option>
+          <option value="box">box · 사각</option>
         </select>
       </div>
       <div class="ctl">

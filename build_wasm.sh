@@ -12,7 +12,7 @@ ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 OUT="$ROOT/web/dist"
 mkdir -p "$OUT"
 
-EXPORTS='["_lbm_create","_lbm_destroy","_lbm_set_naca","_lbm_step","_lbm_nx","_lbm_ny","_lbm_rho","_lbm_ux","_lbm_uy","_lbm_solid","_malloc","_free"]'
+EXPORTS='["_lbm_create","_lbm_destroy","_lbm_set_naca","_lbm_set_cylinder","_lbm_set_ellipse","_lbm_set_box","_lbm_step","_lbm_nx","_lbm_ny","_lbm_rho","_lbm_ux","_lbm_uy","_lbm_solid","_malloc","_free"]'
 
 emcc "$ROOT/src/wasm_bindings.cpp" \
   -I"$ROOT/include" \
